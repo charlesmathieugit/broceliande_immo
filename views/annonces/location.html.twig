@@ -1,0 +1,110 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Annonces en location - Broceliande Immo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Nos biens en location</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <form action="" method="GET" class="border p-3 rounded shadow-sm">
+                <h5 class="mb-3">Filtres</h5>
+                <div class="mb-3">
+                    <label for="prix_min" class="form-label">Loyer minimum</label>
+                    <input type="number" class="form-control" id="prix_min" name="prix_min" value="{{ app.request.get('prix_min') }}">
+                </div>
+                <div class="mb-3">
+                    <label for="prix_max" class="form-label">Loyer maximum</label>
+                    <input type="number" class="form-control" id="prix_max" name="prix_max" value="{{ app.request.get('prix_max') }}">
+                </div>
+                <div class="mb-3">
+                    <label for="surface_min" class="form-label">Surface minimum (m²)</label>
+                    <input type="number" class="form-control" id="surface_min" name="surface_min" value="{{ app.request.get('surface_min') }}">
+                </div>
+                <div class="mb-3">
+                    <label for="pieces" class="form-label">Nombre de pièces minimum</label>
+                    <select class="form-select" id="pieces" name="pieces">
+                        <option value="">Tous</option>
+                        {% for i in 1..7 %}
+                            <option value="{{ i }}" {% if app.request.get('pieces') == i %}selected{% endif %}>{{ i }}+</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+            </form>
+        </div>
+        
+        <div class="col-md-8">
+            {% if annonces is empty %}
+                <div class="alert alert-info">
+                    Aucune annonce ne correspond à vos critères.
+                </div>
+            {% else %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for annonce in annonces %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                {% if annonce.images is not empty %}
+                                    <img src="{{ asset('uploads/annonces/' ~ annonce.images[0].file_path) }}" class="card-img-top" alt="{{ annonce.title }}" style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{{ asset('img/default-property.jpg') }}" class="card-img-top" alt="Image par défaut" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ annonce.title }}</h5>
+                                    <p class="card-text">
+                                        <strong class="text-primary">{{ annonce.price|number_format(0, ',', ' ') }} €/mois</strong>
+                                        {% if annonce.charges %}
+                                            <small class="text-muted">(+ {{ annonce.charges|number_format(0, ',', ' ') }} € charges)</small>
+                                        {% endif %}<br>
+                                        <i class="bi bi-rulers"></i> {{ annonce.surface }} m² - 
+                                        <i class="bi bi-house-door"></i> {{ annonce.pieces }} pièces<br>
+                                        <i class="bi bi-geo-alt"></i> {{ annonce.city }}
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href="{{ url('annonce/' ~ annonce.id) }}" class="btn btn-primary">
+                                            Voir le détail
+                                        </a>
+                                        <span class="badge bg-success">{{ annonce.type_bien|capitalize }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtns = document.querySelectorAll('.favorite-btn');
+    favoriteBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const annonceId = this.dataset.annonceId;
+            fetch('/api/favoris/' + annonceId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const icon = this.querySelector('i');
+                if (data.isFavorite) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

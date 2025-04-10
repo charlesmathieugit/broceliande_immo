@@ -1,0 +1,155 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}{{ annonce.titre }} - Broceliande Immo{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        {% if annonce.images is not empty %}
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    {% for image in annonce.images %}
+                        <div class="swiper-slide">
+                            <img src="/uploads/annonces/{{ image.filename }}" class="img-fluid" alt="Image {{ loop.index }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        {% else %}
+            <img src="/assets/images/no-image.jpg" class="img-fluid" alt="Pas d'image">
+        {% endif %}
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h1 class="card-title">{{ annonce.titre }}</h1>
+                <h2 class="text-primary">{{ annonce.prix|number_format(0, ',', ' ') }} €</h2>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>Type :</strong> {{ annonce.type }}</p>
+                        <p><strong>Surface :</strong> {{ annonce.surface }} m²</p>
+                        <p><strong>Pièces :</strong> {{ annonce.pieces }}</p>
+                        <p><strong>Chambres :</strong> {{ annonce.chambres }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Ville :</strong> {{ annonce.ville }}</p>
+                        <p><strong>Code postal :</strong> {{ annonce.code_postal }}</p>
+                        <p><strong>DPE :</strong> {{ annonce.dpe }}</p>
+                        <p><strong>GES :</strong> {{ annonce.ges }}</p>
+                    </div>
+                </div>
+
+                <h3 class="mt-4">Description</h3>
+                <p>{{ annonce.description|nl2br }}</p>
+
+                {% if annonce.options %}
+                    <h3 class="mt-4">Options et équipements</h3>
+                    <ul class="list-group list-group-flush">
+                        {% for option in annonce.options %}
+                            <li class="list-group-item">{{ option }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3>Contacter l'agent</h3>
+                <p>
+                    <strong>{{ annonce.agent.prenom }} {{ annonce.agent.nom }}</strong><br>
+                    Tél : {{ annonce.agent.telephone }}<br>
+                    Email : {{ annonce.agent.email }}
+                </p>
+
+                <form action="/rendez-vous/create" method="POST" class="mt-4">
+                    <input type="hidden" name="annonce_id" value="{{ annonce.id }}">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date souhaitée</label>
+                        <input type="date" class="form-control" id="date" name="date" required min="{{ "now"|date("Y-m-d") }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="heure" class="form-label">Heure souhaitée</label>
+                        <select class="form-select" id="heure" name="heure" required>
+                            {% for h in 9..18 %}
+                                <option value="{{ h }}:00">{{ h }}:00</option>
+                                {% if h < 18 %}
+                                    <option value="{{ h }}:30">{{ h }}:30</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message (optionnel)</label>
+                        <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Demander un rendez-vous</button>
+                </form>
+            </div>
+        </div>
+
+        {% if app.user %}
+            <button class="btn btn-outline-danger w-100 mt-3 favorite-btn" data-annonce-id="{{ annonce.id }}">
+                <i class="bi bi-heart{% if is_favorite %}-fill{% endif %}"></i>
+                {% if is_favorite %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+            </button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Swiper
+    const swiper = new Swiper('.swiper', {
+        loop: true,
+        pagination: {
+            el: '.swiper-pagination',
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        }
+    });
+
+    // Favorite button handler
+    const favoriteBtn = document.querySelector('.favorite-btn');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', function() {
+            const annonceId = this.dataset.annonceId;
+            fetch('/api/favoris/' + annonceId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const icon = this.querySelector('i');
+                if (data.isFavorite) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    this.textContent = 'Retirer des favoris';
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                    this.textContent = 'Ajouter aux favoris';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

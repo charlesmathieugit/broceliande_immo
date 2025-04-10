@@ -1,0 +1,70 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Contact - Broceliande Immo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Contactez-nous</h2>
+            </div>
+            <div class="card-body">
+                <form action="/contact" method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Nom complet</label>
+                            <input type="text" class="form-control" id="name" name="name" required 
+                                value="{{ app.user ? app.user.nom ~ ' ' ~ app.user.prenom : '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                value="{{ app.user ? app.user.email : '' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control" id="phone" name="phone"
+                            value="{{ app.user ? app.user.telephone : '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Sujet</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="privacy" name="privacy" required>
+                        <label class="form-check-label" for="privacy">
+                            J'accepte que mes données soient utilisées pour traiter ma demande de contact
+                        </label>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h3>Nos coordonnées</h3>
+                <p>
+                    <strong>Broceliande Immo</strong><br>
+                    123 rue de Brocéliande<br>
+                    35380 Paimpont<br><br>
+                    Tél : 02.99.XX.XX.XX<br>
+                    Email : contact@broceliande-immo.fr
+                </p>
+                <div class="ratio ratio-16x9">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2667.XXX!2d-2.XXX!3d48.XXX!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDAxJzMwLjAiTiAywrAwMScwMC4wIlc!5e0!3m2!1sfr!2sfr!4v1234567890!5m2!1sfr!2sfr"
+                            style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

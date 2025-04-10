@@ -1,0 +1,118 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Mon Profil - Broceliande Immo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="avatar-placeholder rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                        {{ user.prenom|first|upper }}{{ user.nom|first|upper }}
+                    </div>
+                    <h3>{{ user.prenom }} {{ user.nom }}</h3>
+                    <p class="text-muted">Membre depuis {{ user.created_at|date('d/m/Y') }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Email
+                        <span class="text-muted">{{ user.email }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Téléphone
+                        <span class="text-muted">{{ user.telephone ?: 'Non renseigné' }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Type de compte
+                        <span class="badge bg-primary">{{ user.role|replace({'ROLE_': ''}) }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Actions rapides</h5>
+                <div class="d-grid gap-2">
+                    <a href="/mes-annonces" class="btn btn-outline-primary">Mes annonces</a>
+                    <a href="/favoris" class="btn btn-outline-primary">Mes favoris</a>
+                    <a href="/rendez-vous" class="btn btn-outline-primary">Mes rendez-vous</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Modifier mon profil</h4>
+            </div>
+            <div class="card-body">
+                <form action="/profile" method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nom" class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="nom" name="nom" value="{{ user.nom }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="prenom" class="form-label">Prénom</label>
+                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ user.prenom }}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control" id="telephone" name="telephone" value="{{ user.telephone }}">
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Nouveau mot de passe</label>
+                        <input type="password" class="form-control" id="password" name="password" minlength="8">
+                        <div class="form-text">Laissez vide pour conserver le mot de passe actuel</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirmer le nouveau mot de passe</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Dernières activités</h4>
+            </div>
+            <div class="list-group list-group-flush">
+                {% if user.activites is empty %}
+                    <div class="list-group-item text-center text-muted py-4">
+                        Aucune activité récente
+                    </div>
+                {% else %}
+                    {% for activite in user.activites %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ activite.titre }}</h6>
+                                <small class="text-muted">{{ activite.date|date('d/m/Y H:i') }}</small>
+                            </div>
+                            <p class="mb-1">{{ activite.description }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

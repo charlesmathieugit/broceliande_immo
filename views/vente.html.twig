@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vente de biens immobiliers - Brocéliande Immo{% endblock %}
+
+{% block body %}
+    {# Hero Section #}
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8 mx-auto text-center">
+                    <h1 class="display-4 mb-4">Nos Biens à Vendre</h1>
+                    <p class="lead mb-4">Découvrez notre sélection de propriétés exceptionnelles en Brocéliande</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Filtres #}
+    <section class="py-4 bg-light">
+        <div class="container">
+            <form class="row g-3">
+                <div class="col-md-3">
+                    <select class="form-select" name="type">
+                        <option value="">Type de bien</option>
+                        <option value="maison">Maison</option>
+                        <option value="appartement">Appartement</option>
+                        <option value="terrain">Terrain</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="budget">
+                        <option value="">Budget max</option>
+                        <option value="100000">100 000 €</option>
+                        <option value="200000">200 000 €</option>
+                        <option value="300000">300 000 €</option>
+                        <option value="400000">400 000 €</option>
+                        <option value="500000">500 000 €</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="pieces">
+                        <option value="">Nombre de pièces</option>
+                        <option value="1">1 pièce</option>
+                        <option value="2">2 pièces</option>
+                        <option value="3">3 pièces</option>
+                        <option value="4">4 pièces</option>
+                        <option value="5">5 pièces et +</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-accent w-100">Rechercher</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    {# Liste des biens #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                {% for bien in biens %}
+                    <div class="col-md-4">
+                        <div class="card h-100 fade-in">
+                            <img src="{{ bien.image }}" class="card-img-top" alt="{{ bien.titre }}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ bien.titre }}</h5>
+                                <p class="card-text text-muted">{{ bien.ville }}</p>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="h5 text-accent mb-0">{{ bien.prix|number_format(0, ',', ' ') }} €</span>
+                                    <span class="badge bg-primary">{{ bien.type }}</span>
+                                </div>
+                                <div class="border-top pt-3">
+                                    <div class="row text-center">
+                                        <div class="col">
+                                            <i class="bi bi-house-door"></i>
+                                            <small class="d-block">{{ bien.surface }} m²</small>
+                                        </div>
+                                        <div class="col">
+                                            <i class="bi bi-door-open"></i>
+                                            <small class="d-block">{{ bien.pieces }} pièces</small>
+                                        </div>
+                                        <div class="col">
+                                            <i class="bi bi-tree"></i>
+                                            <small class="d-block">{{ bien.terrain ?? 0 }} m²</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-top-0">
+                                <a href="{{ path('bien', {'id': bien.id}) }}" class="btn btn-outline-primary w-100">Voir le détail</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Aucun bien ne correspond à vos critères de recherche.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

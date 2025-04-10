@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /broceliande_immo/
+
+# Si le fichier ou le dossier n'existe pas physiquement
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Réécrire vers index.php
+RewriteRule ^(.*)$ index.php [QSA,L]

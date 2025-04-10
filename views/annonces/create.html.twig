@@ -1,0 +1,162 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Créer une annonce - Broceliande Immo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Créer une nouvelle annonce</h2>
+            </div>
+            <div class="card-body">
+                <form action="/annonces/create" method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="type" class="form-label">Type d'annonce</label>
+                            <select class="form-select" id="type" name="type" required>
+                                <option value="vente">Vente</option>
+                                <option value="location">Location</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="categorie" class="form-label">Catégorie</label>
+                            <select class="form-select" id="categorie" name="categorie" required>
+                                <option value="appartement">Appartement</option>
+                                <option value="maison">Maison</option>
+                                <option value="terrain">Terrain</option>
+                                <option value="local_commercial">Local commercial</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="titre" class="form-label">Titre de l'annonce</label>
+                        <input type="text" class="form-control" id="titre" name="titre" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="prix" class="form-label">Prix</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="prix" name="prix" required>
+                                <span class="input-group-text">€</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="surface" class="form-label">Surface (m²)</label>
+                            <input type="number" class="form-control" id="surface" name="surface" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="pieces" class="form-label">Nombre de pièces</label>
+                            <input type="number" class="form-control" id="pieces" name="pieces" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="chambres" class="form-label">Nombre de chambres</label>
+                            <input type="number" class="form-control" id="chambres" name="chambres">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="ville" class="form-label">Ville</label>
+                            <input type="text" class="form-control" id="ville" name="ville" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="code_postal" class="form-label">Code postal</label>
+                            <input type="text" class="form-control" id="code_postal" name="code_postal" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dpe" class="form-label">DPE</label>
+                            <select class="form-select" id="dpe" name="dpe">
+                                <option value="">Non renseigné</option>
+                                {% for note in ['A', 'B', 'C', 'D', 'E', 'F', 'G'] %}
+                                    <option value="{{ note }}">{{ note }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="ges" class="form-label">GES</label>
+                            <select class="form-select" id="ges" name="ges">
+                                <option value="">Non renseigné</option>
+                                {% for note in ['A', 'B', 'C', 'D', 'E', 'F', 'G'] %}
+                                    <option value="{{ note }}">{{ note }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="options" class="form-label">Options (séparées par des virgules)</label>
+                        <input type="text" class="form-control" id="options" name="options" 
+                               placeholder="Ex: Garage, Jardin, Piscine">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Images</label>
+                        <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
+                        <small class="text-muted">Vous pouvez sélectionner plusieurs images</small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Créer l'annonce</button>
+                        <a href="/admin/annonces" class="btn btn-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validation du code postal
+    const codePostalInput = document.getElementById('code_postal');
+    codePostalInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);
+    });
+
+    // Preview des images
+    const imagesInput = document.getElementById('images');
+    imagesInput.addEventListener('change', function() {
+        const previewContainer = document.createElement('div');
+        previewContainer.classList.add('mt-3', 'row', 'g-2');
+        
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const col = document.createElement('div');
+                col.classList.add('col-md-3');
+                
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('img-thumbnail');
+                
+                col.appendChild(img);
+                previewContainer.appendChild(col);
+            }
+            reader.readAsDataURL(file);
+        });
+
+        const existingPreview = this.parentElement.querySelector('.row');
+        if (existingPreview) {
+            existingPreview.remove();
+        }
+        this.parentElement.appendChild(previewContainer);
+    });
+});
+</script>
+{% endblock %}

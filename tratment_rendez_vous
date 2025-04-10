@@ -1,0 +1,48 @@
+<?php
+
+
+function prendre_rendez_vous($pdo, $id, $nom, $date) {
+    
+    $rendez_vous = new rendez_vous($pdo);
+    return $rendez_vous->addrendez_vous($id, $date);
+}
+
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id = $_POST['id'];
+    $date = $_POST['rendez_vousDate'];
+
+    if (prendre_rendez_vous($pdo, $id, $date)) {
+        header('Location: /rendez_vous.php');
+        exit();
+    } else {
+        echo "vous n'avez pas pu rendez-vous. Vous pouvez tout de meme nous contacter :) ";
+    }
+}
+
+
+
+function add($nom,$id_bien,$date){
+
+    function add($nom, $id_bien, $date) {
+        $host = 'localhost';
+        $db = 'broceliande_immo';
+        $user = 'root';
+        $pass = '';
+    
+        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+    
+    
+        try {
+            $pdo = new PDO($dsn, $user, $pass,);
+            $sql = "INSERT INTO annonces (nom, id_logement, date,validation)) VALUES (?,?,?,?)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute()
+    
+        }
+    }
+    
+
+}
+?>

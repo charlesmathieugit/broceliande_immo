@@ -1,0 +1,81 @@
+/* Style personnalisé pour Broceliande Immo */
+
+/* Styles généraux */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Styles de la navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Styles des cartes d'annonces */
+.card {
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Styles du footer */
+footer {
+    margin-top: auto;
+}
+
+footer a {
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Styles des formulaires */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Styles des boutons */
+.btn {
+    padding: 0.5rem 1.5rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+}
+
+/* Styles des alertes */
+.alert {
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+/* Styles des sections */
+section {
+    margin-bottom: 4rem;
+}
+
+section:last-child {
+    margin-bottom: 0;
+}
