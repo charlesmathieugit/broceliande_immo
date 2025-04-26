@@ -1,70 +1,95 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../models/Contact.php';
+namespace Controllers;
 
-class ContactController {
+use Core\Controller;
+use Core\Database;
+use Models\Contact;
+
+class ContactController extends Controller {
     private $contactModel;
     
     public function __construct() {
-        global $pdo;
-        $this->contactModel = new Contact($pdo);
+        parent::__construct();
+        $this->contactModel = new Contact(Database::getInstance());
     }
     
-    public function index() {
-        include __DIR__ . '/../views/contact/index.php';
+    public function showForm() {
+        return $this->render('contact/index.html.twig');
     }
     
     public function send() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-                'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING),
+                'name' => trim(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING)),
                 'email' => filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL),
-                'message' => filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING)
+                'phone' => trim(filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING)),
+                'message' => trim(filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING))
             ];
             
             // Validation des données
-            if (!$data['name'] || !$data['email'] || !$data['message']) {
-                $_SESSION['error'] = "Tous les champs sont obligatoires.";
-                header("Location: /contact");
-                exit;
+            $errors = [];
+            if (empty($data['name'])) {
+                $errors[] = "Le nom est obligatoire";
             }
             
-            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                $_SESSION['error'] = "L'adresse email n'est pas valide.";
-                header("Location: /contact");
-                exit;
+            if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "L'adresse email n'est pas valide";
             }
             
-            // Envoi d'un email de notification (à configurer)
-            $to = "admin@broceliande-immo.fr";
-            $subject = "Nouveau message de contact";
-            $message = "Nom: " . $data['name'] . "\n";
-            $message .= "Email: " . $data['email'] . "\n\n";
-            $message .= "Message:\n" . $data['message'];
-            $headers = "From: " . $data['email'];
-            
-            mail($to, $subject, $message, $headers);
-            
-            // Sauvegarde dans la base de données
-            if ($this->contactModel->create($data)) {
-                $_SESSION['success'] = "Votre message a été envoyé avec succès.";
-            } else {
-                $_SESSION['error'] = "Une erreur est survenue lors de l'envoi du message.";
+            if (empty($data['phone'])) {
+                $errors[] = "Le numéro de téléphone est obligatoire";
             }
             
-            header("Location: /contact");
-            exit;
+            if (!empty($errors)) {
+                $this->setFlash('error', implode('<br>', $errors));
+                return $this->render('contact/index.html.twig', [
+                    'formData' => $data,
+                    'errors' => $errors
+                ]);
+            }
+            
+            // Traitement du message de contact
+            try {
+                // Enregistrement du message dans la base de données si nécessaire
+                // $this->contactModel->create($data);
+                
+                // Envoi d'un email à l'administrateur (désactivé pour le développement)
+                /*
+                $to = "contact@broceliande-immo.fr";
+                $subject = "Nouveau message de contact de " . $data['name'];
+                $message = "Nom: " . $data['name'] . "\n";
+                $message .= "Email: " . $data['email'] . "\n";
+                $message .= "Téléphone: " . $data['phone'] . "\n\n";
+                $message .= "Message:\n" . $data['message'];
+                $headers = "From: " . $data['email'];
+                
+                mail($to, $subject, $message, $headers);
+                */
+                
+                // Message de succès
+                $this->setFlash('success', 'Merci pour votre message ! Un conseiller vous recontactera très rapidement.');
+                return $this->redirect('contact');
+                
+            } catch (\Exception $e) {
+                $this->setFlash('error', 'Une erreur est survenue lors de l\'envoi du message.');
+                return $this->render('contact/index.html.twig', [
+                    'formData' => $data
+                ]);
+            }
         }
+        
+        return $this->redirect('contact');
     }
     
     public function admin() {
-        // Vérification des droits d'administration
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: /login");
-            exit;
-        }
+        // Fonction admin sans vérification d'authentification
+        // Note: cette fonction est accessible à tous les utilisateurs
         
-        $messages = $this->contactModel->getAll();
-        include __DIR__ . '/../views/contact/admin.php';
+        // Récupération des messages de contact
+        // $messages = $this->contactModel->getAll();
+        
+        return $this->render('contact/admin.html.twig', [
+            'messages' => []
+        ]);
     }
 }

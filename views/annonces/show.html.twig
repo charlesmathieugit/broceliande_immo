@@ -19,31 +19,9 @@
     </nav>
 
     <div class="row">
-        <!-- Galerie d'images -->
+        <!-- Image principale -->
         <div class="col-md-8 mb-4">
-            {% if annonce.images is empty %}
-                <img src="{{ asset('img/default-property.jpg') }}" class="img-fluid rounded" alt="Image par défaut">
-            {% else %}
-                <div id="carouselAnnonce" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        {% for image in annonce.images %}
-                            <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                <img src="{{ asset('uploads/annonces/' ~ image.file_path) }}" class="d-block w-100 rounded" alt="Image {{ loop.index }}" style="height: 400px; object-fit: cover;">
-                            </div>
-                        {% endfor %}
-                    </div>
-                    {% if annonce.images|length > 1 %}
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselAnnonce" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Précédent</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselAnnonce" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Suivant</span>
-                        </button>
-                    {% endif %}
-                </div>
-            {% endif %}
+            <img src="{{ url(annonce.image_path) }}" class="img-fluid rounded" alt="{{ annonce.title }}" style="width: 100%; height: 400px; object-fit: cover;">
         </div>
 
         <!-- Informations principales -->
@@ -119,7 +97,9 @@
                             <label for="message" class="form-label">Message</label>
                             <textarea class="form-control" id="message" name="message" rows="4" required>Bonjour, je suis intéressé(e) par ce bien.</textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Envoyer</button>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-envelope"></i> Envoyer
+                        </button>
                     </form>
                 </div>
             </div>

@@ -3,68 +3,221 @@
 {% block title %}Contact - Broceliande Immo{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Contactez-nous</h2>
-            </div>
-            <div class="card-body">
-                <form action="/contact" method="POST">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label">Nom complet</label>
-                            <input type="text" class="form-control" id="name" name="name" required 
-                                value="{{ app.user ? app.user.nom ~ ' ' ~ app.user.prenom : '' }}">
+<div class="contact-header">
+    <div class="container py-5">
+        <h1 class="text-center mb-4"><i class="bi bi-envelope-heart"></i> Nous contacter</h1>
+        <p class="text-center text-muted lead">Nous sommes à votre écoute pour toutes vos questions immobilières</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Formulaire de contact -->
+        <div class="col-lg-7 mb-5 mb-lg-0">
+            <div class="contact-form-container">
+                {% if app.session.flashBag.has('success') %}
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill"></i> Merci pour votre message ! Nous vous recontacterons très rapidement.
+                    </div>
+                {% endif %}
+                
+                <form action="{{ url('contact') }}" method="POST" class="contact-form">
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Votre nom" required>
+                                <label for="name"><i class="bi bi-person"></i> Votre nom</label>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required
-                                value="{{ app.user ? app.user.email : '' }}">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Votre email" required
+                                    value="{{ app.user ? app.user.email : '' }}">
+                                <label for="email"><i class="bi bi-envelope"></i> Votre email</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Téléphone</label>
-                        <input type="tel" class="form-control" id="phone" name="phone"
-                            value="{{ app.user ? app.user.telephone : '' }}">
+                    
+                    <div class="mb-4">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Votre téléphone" required
+                                value="{{ app.user ? app.user.telephone : '' }}">
+                            <label for="phone"><i class="bi bi-telephone"></i> Votre téléphone</label>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="subject" class="form-label">Sujet</label>
-                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    
+                    <div class="mb-4">
+                        <div class="form-floating">
+                            <textarea class="form-control" id="message" name="message" placeholder="Votre message (facultatif)" style="height: 120px"></textarea>
+                            <label for="message"><i class="bi bi-chat-left-text"></i> Votre message (facultatif)</label>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <div class="mb-3 form-check">
+                    
+                    <div class="mb-4 form-check ps-4">
                         <input type="checkbox" class="form-check-input" id="privacy" name="privacy" required>
                         <label class="form-check-label" for="privacy">
                             J'accepte que mes données soient utilisées pour traiter ma demande de contact
                         </label>
                     </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    
+                    <div class="contact-cta">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-send me-2"></i> Envoyer ma demande
+                        </button>
+                        <p class="text-center mt-3">
+                            <i class="bi bi-clock text-primary"></i> Un conseiller vous recontactera sous 24 à 48h
+                        </p>
                     </div>
                 </form>
             </div>
         </div>
-
-        <div class="card mt-4">
-            <div class="card-body">
-                <h3>Nos coordonnées</h3>
-                <p>
-                    <strong>Broceliande Immo</strong><br>
-                    123 rue de Brocéliande<br>
-                    35380 Paimpont<br><br>
-                    Tél : 02.99.XX.XX.XX<br>
-                    Email : contact@broceliande-immo.fr
-                </p>
-                <div class="ratio ratio-16x9">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2667.XXX!2d-2.XXX!3d48.XXX!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDAxJzMwLjAiTiAywrAwMScwMC4wIlc!5e0!3m2!1sfr!2sfr!4v1234567890!5m2!1sfr!2sfr"
-                            style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        
+        <!-- Informations de contact -->
+        <div class="col-lg-5">
+            <div class="contact-info-container">
+                <div class="contact-info-card mb-4">
+                    <div class="contact-info-header">
+                        <i class="bi bi-building large-icon"></i>
+                        <h3>Notre agence</h3>
+                    </div>
+                    <div class="contact-info-body">
+                        <p class="mb-4">
+                            <strong>Brocéliande Immobilier</strong><br>
+                            123 rue de la Forêt de Brocéliande<br>
+                            35380 Paimpont<br>
+                        </p>
+                        <p class="contact-method">
+                            <i class="bi bi-telephone-fill"></i>
+                            <a href="tel:0299XXXXXX">02.99.XX.XX.XX</a>
+                        </p>
+                        <p class="contact-method">
+                            <i class="bi bi-envelope-fill"></i>
+                            <a href="mailto:contact@broceliande-immo.fr">contact@broceliande-immo.fr</a>
+                        </p>
+                        <p class="contact-method">
+                            <i class="bi bi-clock-fill"></i>
+                            Lun-Ven: 9h-19h | Sam: 9h-12h
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="contact-map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10660.315454173253!2d-2.1747812302246143!3d48.02233910000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x480fb3b153441aa5%3A0xc3ea2eb28c419fa5!2sPaimpont!5e0!3m2!1sfr!2sfr!4v1650987654321!5m2!1sfr!2sfr" 
+                        width="100%" height="250" style="border:0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" 
+                        allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .contact-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    
+    .contact-header h1 {
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    
+    .contact-header .lead {
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .contact-form-container {
+        background: white;
+        border-radius: 1rem;
+        padding: 2.5rem;
+        box-shadow: var(--card-shadow);
+    }
+    
+    .form-floating label {
+        color: var(--gray-color);
+    }
+    
+    .form-control:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 0.25rem rgba(66, 153, 225, 0.25);
+    }
+    
+    .large-icon {
+        font-size: 2.5rem;
+        color: var(--accent-color);
+        margin-right: 1rem;
+    }
+    
+    .contact-info-container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .contact-info-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: var(--card-shadow);
+        flex-grow: 1;
+    }
+    
+    .contact-info-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-info-header h3 {
+        margin-bottom: 0;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .contact-method {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .contact-method i {
+        color: var(--accent-color);
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+    }
+    
+    .contact-method a {
+        color: var(--dark-color);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .contact-method a:hover {
+        color: var(--accent-color);
+    }
+    
+    .contact-cta p {
+        color: var(--gray-color);
+        font-size: 0.9rem;
+    }
+    
+    .contact-map-container {
+        margin-top: 1.5rem;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+    
+    @media (max-width: 992px) {
+        .contact-form-container, .contact-info-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
 {% endblock %}

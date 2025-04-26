@@ -1,19 +1,24 @@
 <?php
+namespace Models;
+
+use PDO;
+
 class Contact {
     private $pdo;
     
-    public function __construct($pdo) {
+    public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
     }
     
     public function create($data) {
         $stmt = $this->pdo->prepare(
-            "INSERT INTO contacts (name, email, message, created_at) 
-             VALUES (?, ?, ?, NOW())"
+            "INSERT INTO contacts (name, email, phone, message, created_at) 
+             VALUES (?, ?, ?, ?, NOW())"
         );
         return $stmt->execute([
             $data['name'],
             $data['email'],
+            $data['phone'],
             $data['message']
         ]);
     }

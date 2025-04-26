@@ -2,7 +2,6 @@
 
 use Controllers\HomeController;
 use Controllers\AnnoncesController;
-use Controllers\AuthController;
 use Controllers\ContactController;
 
 function registerRoutes($router) {
@@ -14,12 +13,7 @@ function registerRoutes($router) {
     $router->get('/annonces/location', [AnnoncesController::class, 'location']);
     $router->get('/annonce/{id}', [AnnoncesController::class, 'show']);
 
-    // Authentification
-    $router->get('/register', [AuthController::class, 'showRegisterForm']);
-    $router->post('/register', [AuthController::class, 'register']);
-    $router->get('/login', [AuthController::class, 'showLoginForm']);
-    $router->post('/login', [AuthController::class, 'login']);
-    $router->get('/logout', [AuthController::class, 'logout']);
+    // Authentification supprimée
 
     // Contact
     $router->get('/contact', [ContactController::class, 'showForm']);

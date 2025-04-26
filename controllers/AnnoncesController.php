@@ -27,16 +27,48 @@ class AnnoncesController extends Controller {
     }
     
     public function vente() {
-        $annonces = $this->annonceModel->findByFilters(['category' => 'vente']);
+        // Récupération des paramètres de filtre
+        $filters = [
+            'category' => 'vente',
+            'prix_min' => filter_input(INPUT_GET, 'prix_min', FILTER_VALIDATE_INT),
+            'prix_max' => filter_input(INPUT_GET, 'prix_max', FILTER_VALIDATE_INT),
+            'surface_min' => filter_input(INPUT_GET, 'surface_min', FILTER_VALIDATE_INT),
+            'pieces' => filter_input(INPUT_GET, 'pieces', FILTER_VALIDATE_INT)
+        ];
+        
+        // Nettoyage des filtres vides
+        $filters = array_filter($filters, function($value) {
+            return $value !== false && $value !== null && $value !== '';
+        });
+        
+        $annonces = $this->annonceModel->findByFilters($filters);
+        
         return $this->render('annonces/vente.html.twig', [
-            'annonces' => $annonces
+            'annonces' => $annonces,
+            'filters' => $filters
         ]);
     }
     
     public function location() {
-        $annonces = $this->annonceModel->findByFilters(['category' => 'location']);
+        // Récupération des paramètres de filtre
+        $filters = [
+            'category' => 'location',
+            'prix_min' => filter_input(INPUT_GET, 'prix_min', FILTER_VALIDATE_INT),
+            'prix_max' => filter_input(INPUT_GET, 'prix_max', FILTER_VALIDATE_INT),
+            'surface_min' => filter_input(INPUT_GET, 'surface_min', FILTER_VALIDATE_INT),
+            'pieces' => filter_input(INPUT_GET, 'pieces', FILTER_VALIDATE_INT)
+        ];
+        
+        // Nettoyage des filtres vides
+        $filters = array_filter($filters, function($value) {
+            return $value !== false && $value !== null && $value !== '';
+        });
+        
+        $annonces = $this->annonceModel->findByFilters($filters);
+        
         return $this->render('annonces/location.html.twig', [
-            'annonces' => $annonces
+            'annonces' => $annonces,
+            'filters' => $filters
         ]);
     }
 }

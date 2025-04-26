@@ -4,23 +4,36 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="mb-4">Nos biens en location</h1>
+    <h1 class="mb-4">
+        <i class="bi bi-house-heart"></i> Nos biens en location
+    </h1>
 
     <div class="row mb-4">
         <div class="col-md-4">
             <form action="" method="GET" class="border p-3 rounded shadow-sm">
-                <h5 class="mb-3">Filtres</h5>
+                <h5 class="mb-3">
+                    <i class="bi bi-funnel"></i> Filtres
+                </h5>
                 <div class="mb-3">
                     <label for="prix_min" class="form-label">Loyer minimum</label>
-                    <input type="number" class="form-control" id="prix_min" name="prix_min" value="{{ app.request.get('prix_min') }}">
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="prix_min" name="prix_min" value="{{ app.request.get('prix_min') }}">
+                        <span class="input-group-text">€</span>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="prix_max" class="form-label">Loyer maximum</label>
-                    <input type="number" class="form-control" id="prix_max" name="prix_max" value="{{ app.request.get('prix_max') }}">
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="prix_max" name="prix_max" value="{{ app.request.get('prix_max') }}">
+                        <span class="input-group-text">€</span>
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <label for="surface_min" class="form-label">Surface minimum (m²)</label>
-                    <input type="number" class="form-control" id="surface_min" name="surface_min" value="{{ app.request.get('surface_min') }}">
+                    <label for="surface_min" class="form-label">Surface minimum</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="surface_min" name="surface_min" value="{{ app.request.get('surface_min') }}">
+                        <span class="input-group-text">m²</span>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="pieces" class="form-label">Nombre de pièces minimum</label>
@@ -31,25 +44,23 @@
                         {% endfor %}
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Filtrer
+                </button>
             </form>
         </div>
         
         <div class="col-md-8">
             {% if annonces is empty %}
                 <div class="alert alert-info">
-                    Aucune annonce ne correspond à vos critères.
+                    <i class="bi bi-info-circle"></i> Aucune annonce ne correspond à vos critères.
                 </div>
             {% else %}
                 <div class="row row-cols-1 row-cols-md-2 g-4">
                     {% for annonce in annonces %}
                         <div class="col">
                             <div class="card h-100 shadow-sm">
-                                {% if annonce.images is not empty %}
-                                    <img src="{{ asset('uploads/annonces/' ~ annonce.images[0].file_path) }}" class="card-img-top" alt="{{ annonce.title }}" style="height: 200px; object-fit: cover;">
-                                {% else %}
-                                    <img src="{{ asset('img/default-property.jpg') }}" class="card-img-top" alt="Image par défaut" style="height: 200px; object-fit: cover;">
-                                {% endif %}
+                                <img src="{{ url(annonce.image_path) }}" class="card-img-top" alt="{{ annonce.title }}" style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ annonce.title }}</h5>
                                     <p class="card-text">
@@ -63,7 +74,7 @@
                                     </p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href="{{ url('annonce/' ~ annonce.id) }}" class="btn btn-primary">
-                                            Voir le détail
+                                            <i class="bi bi-eye"></i> Voir le détail
                                         </a>
                                         <span class="badge bg-success">{{ annonce.type_bien|capitalize }}</span>
                                     </div>

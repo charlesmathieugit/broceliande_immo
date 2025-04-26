@@ -13,7 +13,13 @@ function url($path = '') {
  * Génère une URL pour un asset
  */
 function asset($path) {
-    return url('public/' . ltrim($path, '/'));
+    // Éviter le double préfixe 'public/'
+    $path = ltrim($path, '/');
+    if (strpos($path, 'public/') === 0) {
+        return url($path);
+    } else {
+        return url('public/' . $path);
+    }
 }
 
 /**
